@@ -39,8 +39,10 @@
                                     <a href="{% url "snippet-delete" snippet.id %}">
                                         <i style="color: red;" class="fa-solid fa-trash"></i>
                                     </a>
+                                    <a href="{% url "snippet-edit" snippet.id %}">
+                                        <i style="color: red;" class="fas fa-edit"></i>
+                                    </a>
                                 </td>
-
                                 <td>{{ snippet.lang }} </td>
                                 {# https://docs.djangoproject.com/en/5.0/ref/templates/builtins/#std-templatefilter-date #}
                                 <td>{{ snippet.creation_date | date:"Y-m-d H:i:s"}}</td>

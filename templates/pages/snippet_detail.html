@@ -11,7 +11,7 @@
 
         <div class="row">
             <div class="col">
-
+                {% if type == 'view' %}
                 <fieldset disabled>
                     <div class="row disabled">
                         <div class="col col-6">
@@ -30,14 +30,35 @@
                             <div class="p-2 h-100" style="border:1px solid #ced4da; border-radius:5px;">
                                 <p>
                                     {{ snippet.code }}
-                                </p>
-                 
-                            </div>
-                 
+                                </p>          
+                            </div>                
                         </div>
                     </div>
-                 </fieldset>              
-
+                 </fieldset>
+                 {% else %}
+                 <form action="{% url "snippet-edit" snippet.id %}" method='post'> 
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col col-6">
+                            Название: <input type="text" name='name' value="{{ snippet.name }}" class="form-control">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <div class="p-2 h-100" style="border:1px solid #ced4da; border-radius:5px;">
+                                <textarea name='code' class="form-control" rows="3" cols="50">
+                                    {{ snippet.code }}
+                                </textarea>          
+                            </div>                
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+                    </div>
+                </form>
+                 {% endif %}
             </div>
         </div>
     </div>
