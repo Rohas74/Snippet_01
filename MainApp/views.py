@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
-from MainApp.forms import SnippetForm
+from MainApp.forms import SnippetForm, UserRegistrationForm
 from MainApp.models import Snippet
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import auth
@@ -9,6 +9,16 @@ from django.contrib.auth.decorators import login_required
 def index_page(request):
     context = {'pagename': 'PythonBin'}
     return render(request, 'pages/index.html', context)
+
+
+def my_snippets(request):
+    snippets = Snippet.objects.filter(user=request.user)  
+    context = {
+        'pagename': 'Мои сниппеты',
+        'snippets': snippets
+        }
+    return render(request, 'pages/view_snippets.html', context)
+
 
 @login_required(login_url='home')
 def add_snippet_page(request):
@@ -54,7 +64,7 @@ def snippet_detail(request, snippet_id):
         context["type"] = "view"
         return render(request, "pages/snippet_detail.html", context)
 
-
+@login_required
 def snippet_edit(request, snippet_id):
     context = {'pagename': 'Редактирование сниппета'} 
     try:
@@ -86,7 +96,7 @@ def snippet_edit(request, snippet_id):
     else:
         return redirect("snippets-list")
 
-
+@login_required
 def snippet_delete(request, snippet_id):
     if request.method == "GET" or request.method == "POST":
         snippet = get_object_or_404(Snippet, id=snippet_id)
@@ -106,8 +116,11 @@ def login(request):
         if user is not None:
             auth.login(request, user)
         else:
-            # Return error message
-            pass
+            context = {
+                'pagename': "PythonBin",
+                "errors": ['wrong username or password'],
+            }
+            return render(request, "pages/index.html", context)
     return redirect('home')
 
 
@@ -123,3 +136,19 @@ def my_snippets_page(request):
         'snippets': snippets
         }
     return render(request, 'pages/view_snippets.html', context)
+
+def create_user(request):
+    context = {"pagename":"Регистрация нового пользователя"}
+    # Создаем новую форму при запросе методом GET
+    if request.method == "GET":
+        form = UserRegistrationForm()
+    
+    # Получаем данные из формы и на их основе создаем нового пользователя в БД
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+
+    context["form"] = form
+    return render(request, "pages/registration.html", context)
