@@ -26,3 +26,5 @@ python manage.py dumpdata MainApp --indent 4 > MainApp/fixtures/save_all.json
 ```
 python manage.py loaddata MainApp/fixtures/save_all.json
 ```
+#Database host address:Rohas74.mysql.pythonanywhere-services.com
+#Username:Rohas74
